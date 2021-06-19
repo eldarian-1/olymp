@@ -21,20 +21,8 @@ void rev(char *c) {
     *c = *c == 'W' ? 'B' : 'W';
 }
 
-bool aif(int i) {
-    return s[i] != s[i + 1] && (i == 0 || s[i - 1] != s[i]);
-}
-
-bool bif(int i) {
-    return i >= 1 && s[i - 1] != s[i];
-}
-
-bool cif(int i) {
-    return false;
-}
-
-void f(int i) {
-    if(aif(i) || bif(i) || cif(i)) {
+void f(int i, char ta) {
+    if(s[i] != ta) {
         rev(&s[0] + i);
         rev(&s[0] + i + 1);
         t.push_back(i);
@@ -47,8 +35,14 @@ int main() {
         cout << -1;
     else {
         fr(i, n - 1)
-            f(i);
-        cout << s;
+            f(i, 'W');
+        bool flag = false;
+        int i = 0;
+        while(i < s.size() && !flag)
+            flag = s[i++] != 'W';
+        if(flag)
+            fr(i, n - 1)
+                f(i, 'B');
         cout << t.size() << '\n';
         for(int i : t)
             cout << (i + 1) << ' ';
