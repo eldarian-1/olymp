@@ -1,34 +1,48 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef vector<ll> vll;
+#define frn(a, b, c) for(int a = b; a < c; ++a)
 
-ll n, k, m = 0;
-vll v;
+typedef vector<int> vi;
+typedef pair<int, vector<int>> piv;
+typedef map<int, vector<int>> miv;
 
-ll r(ll i) {
-    if(i > n)
-        return 0;
-    if(v[i])
-        return v[i];
-    if(i % 2 == 0)
-        v[i] = r(i + 1) + r(i * 2) + 1;
+typedef struct castle {int a, b, c;} cas;
+typedef vector<castle> vc;
+
+int n, m, k;
+vc v;
+miv p;
+
+void add(int u, int v) {
+    if(p.find(v) == p.end())
+        p.insert(piv(v, vi({u})));
     else
-        v[i] = r(i * 2) + 1;
-    return v[i];
+        p[v].push_back(u);
+}
+
+bool pos() {
+    sort(v.begin(), v.end(), [](cas l, cas r){return l.a - r.a;});
+    frn(i, 0, n)
+        if(v[i].a > k)
+            return false;
+        else
+            k += v[i].b;
+    return true;
 }
 
 int main() {
-    cin >> n >> k;
-    v = vll(n + 1, 0);
-    time_t start, end;
-    time(&start);
-    r(1);
-    ll i = n;
-    while(!m)
-        if(v[i--] >= k)
-            m = i + 1;
-    time(&end);
-    cout << m << ", sec: " << difftime(end, start);
+    cin >> n >> m >> k;
+    v = vc(n);
+    frn(i, 0, n)
+        cin >> v[i].a >> v[i].b >> v[i].c;
+    frn(i, 0, m) {
+        int u, v;
+        cin >> u >> v;
+        add(u, v);
+    }
+    if(!pos()) {
+        cout << -1;
+        return 0;
+    }
 }
